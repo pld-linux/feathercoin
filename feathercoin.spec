@@ -1,7 +1,7 @@
 Summary:	Feathercoin is a peer-to-peer currency
 Name:		feathercoin
 Version:	0.0.1
-Release:	2
+Release:	3
 License:	MIT/X11
 Group:		X11/Applications
 Source0:	https://github.com/FeatherCoin/FeatherCoin/archive/master.zip?/%{name}-%{version}.zip
