@@ -1,4 +1,5 @@
-Summary:	Feathercoin is a peer-to-peer currency
+Summary:	Feathercoin - a peer-to-peer currency
+Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
 Version:	0.0.1
 Release:	9
@@ -6,30 +7,39 @@ License:	MIT/X11
 Group:		X11/Applications
 Source0:	https://github.com/FeatherCoin/FeatherCoin/archive/master.zip?/%{name}-%{version}.zip
 # Source0-md5:	9662befa9e33b7ab7ded60d41cd12eea
-URL:		http://www.feathercoin.org
-BuildRequires:	QtCore-devel
-BuildRequires:	QtDBus-devel
-BuildRequires:	QtGui-devel
+URL:		https://www.feathercoin.com/
+BuildRequires:	QtCore-devel >= 4
+BuildRequires:	QtDBus-devel >= 4
+BuildRequires:	QtGui-devel >= 4
 BuildRequires:	boost-devel
 BuildRequires:	db-cxx-devel
 BuildRequires:	miniupnpc-devel >= 1.5
 BuildRequires:	openssl-devel
 BuildRequires:	qrencode-devel
-BuildRequires:	qt4-qmake
+BuildRequires:	qt4-qmake >= 4
 Requires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Feathercoin is a peer-to-peer currency. Peer-to-peer means that no central
-authority issues new money or tracks transactions. These tasks are
-managed collectively by the network.
+Feathercoin is a peer-to-peer currency. Peer-to-peer means that no
+central authority issues new money or tracks transactions. These tasks
+are managed collectively by the network.
+
+%description -l pl.UTF-8
+Feathercoin to waluta peer-to-peer. Peer-to-peer oznacza, że nie ma
+centralnego urzędu, który emituje nowe pieniądze czy śledzi
+transakcje. Zadania te są obsługiwane zespołowo przez sieć.
 
 %package qt
 Summary:	Qt-based Feathercoin Wallet
+Summary(pl.UTF-8):	Oparty na Qt portfel Feathercoin
 Group:		X11/Applications
 
 %description qt
 Qt-based Feathercoin Wallet.
+
+%description qt -l pl.UTF-8
+Oparty na Qt portfel Feathercoin.
 
 %prep
 %setup -q -c
