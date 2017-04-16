@@ -1,0 +1,11 @@
+--- Feathercoin-0.9.6/src/db.cpp.orig	2017-04-16 13:38:15.712488228 +0200
++++ Feathercoin-0.9.6/src/db.cpp	2017-04-16 13:38:19.465821520 +0200
+@@ -44,7 +44,7 @@
+     if (ret != 0)
+         LogPrintf("CDBEnv::EnvShutdown : Error %d shutting down database environment: %s\n", ret, DbEnv::strerror(ret));
+     if (!fMockDb)
+-        DbEnv(0).remove(path.string().c_str(), 0);
++        DbEnv(0u).remove(path.string().c_str(), 0);
+ }
+ 
+ CDBEnv::CDBEnv() : dbenv(DB_CXX_NO_EXCEPTIONS)

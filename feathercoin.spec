@@ -1,22 +1,47 @@
+# NOTE: "portable wallet" wants BDB 4.8
+#
+# Conditional build:
+%bcond_with	ccache	# use ccache for building
+%bcond_without	gui	# Qt5 GUI
+
 Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
-Version:	0.0.1
-Release:	9
-License:	MIT/X11
-Group:		X11/Applications
-Source0:	https://github.com/FeatherCoin/FeatherCoin/archive/master.zip?/%{name}-%{version}.zip
-# Source0-md5:	9662befa9e33b7ab7ded60d41cd12eea
+Version:	0.9.6
+Release:	1
+License:	MIT
+Group:		Applications/Networking
+#Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
+Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	9ac8509ab7bc7fb39b8e9d474a1079e3
+Patch0:		%{name}-c++.patch
+Patch1:		%{name}-zxing.patch
 URL:		https://www.feathercoin.com/
-BuildRequires:	QtCore-devel >= 4
-BuildRequires:	QtDBus-devel >= 4
-BuildRequires:	QtGui-devel >= 4
+%if %{with gui}
+BuildRequires:	Qt5Core-devel >= 5
+BuildRequires:	Qt5DBus-devel >= 5
+BuildRequires:	Qt5Gui-devel >= 5
+BuildRequires:	Qt5Network-devel >= 5
+BuildRequires:	Qt5PrintSupport-devel >= 5
+BuildRequires:	Qt5Test-devel >= 5
+BuildRequires:	Qt5Widgets-devel >= 5
+%endif
+BuildRequires:	autoconf >= 2.69
+BuildRequires:	automake
 BuildRequires:	boost-devel
-BuildRequires:	db-cxx-devel
+%{?with_ccache:BuildRequires:	ccache}
+BuildRequires:	db-cxx-devel >= 4.8
+BuildRequires:	gettext-tools
+%{?with_gui:BuildRequires:	libpng-devel}
+BuildRequires:	libstdc++-devel
 BuildRequires:	miniupnpc-devel >= 1.5
 BuildRequires:	openssl-devel
+BuildRequires:	pkgconfig
+BuildRequires:	protobuf-devel
 BuildRequires:	qrencode-devel
-BuildRequires:	qt4-qmake >= 4
+%{?with_gui:BuildRequires:	qt5-build >= 5}
+BuildRequires:	zxing-cpp-devel
+%{?with_gui:BuildRequires:	zlib-devel}
 Requires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -42,47 +67,54 @@ Qt-based Feathercoin Wallet.
 Oparty na Qt portfel Feathercoin.
 
 %prep
-%setup -q -c
+%setup -q -n Feathercoin-%{version}
+%patch0 -p1
+%patch1 -p1
 
 %build
-cd FeatherCoin-master
-qmake-qt4 \
-	USE_UPNP=1 \
-	USE_DBUS=1 \
-	USE_QRCODE=1
+install -d src/build-aux
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+# --with-gui defaults to qt4, but it doesn't build (QJsonObject is required)
+%configure \
+	--enable-ccache%{!?with_ccache:=no} \
+	--disable-silent-rules \
+	--with-incompatible-bdb \
+	--with-gui=%{?with_gui:qt5}%{!?with_gui:no}
 
 %{__make}
 
-%{__make} -C src -f makefile.unix \
-	CXX="%{__cxx}" \
-	CXXFLAGS="%{rpmcflags} %{rpmcxxflags} %{rpmcppflags}"
-
 %install
 rm -rf $RPM_BUILD_ROOT
-cd FeatherCoin-master
 
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_libdir}/%{name},%{_mandir}/man{1,5},%{_localedir},%{_desktopdir},%{_pixmapsdir},%{_datadir}/kde4/services}
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
-install src/feathercoind $RPM_BUILD_ROOT%{_libdir}/%{name}/feathercoind
-sed -e 's#/usr/lib/#%{_libdir}/#g' -e 's#bitcoin#feathercoin#g' contrib/debian/bin/bitcoind > $RPM_BUILD_ROOT%{_bindir}/feathercoind
-chmod 755 $RPM_BUILD_ROOT%{_bindir}/feathercoind
-
-install feathercoin-qt $RPM_BUILD_ROOT%{_bindir}
-sed -e 's#bitcoin#feathercoin#g' contrib/debian/bitcoin-qt.desktop > $RPM_BUILD_ROOT%{_desktopdir}/feathercoin-qt.desktop
+install -d $RPM_BUILD_ROOT{%{_mandir}/man{1,5},%{_desktopdir},%{_datadir}/kde4/services}
+sed -e 's#bitcoin#feathercoin#g;s#Bitcoin#Feathercoin#g' contrib/debian/bitcoin-qt.desktop > $RPM_BUILD_ROOT%{_desktopdir}/feathercoin-qt.desktop
 sed -e 's#bitcoin#feathercoin#g' contrib/debian/bitcoin-qt.protocol > $RPM_BUILD_ROOT%{_datadir}/kde4/services/feathercoin-qt.protocol
+cp -p contrib/debian/manpages/*.1 $RPM_BUILD_ROOT%{_mandir}/man1
+cp -p contrib/debian/manpages/*.5 $RPM_BUILD_ROOT%{_mandir}/man5
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc FeatherCoin-master/doc/*.txt FeatherCoin-master/contrib/debian/examples/bitcoin.conf
+%doc COPYING README.md doc/*.txt contrib/debian/examples/bitcoin.conf
+%attr(755,root,root) %{_bindir}/feathercoin-cli
 %attr(755,root,root) %{_bindir}/feathercoind
-%dir %{_libdir}/%{name}
-%attr(755,root,root) %{_libdir}/%{name}/feathercoind
+%attr(755,root,root) %{_bindir}/test_bitcoin
+%{_mandir}/man1/feathercoin-cli.1*
+%{_mandir}/man1/feathercoind.1*
+%{_mandir}/man5/feathercoin.conf.5*
 
 %files qt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/feathercoin-qt
+%attr(755,root,root) %{_bindir}/test_bitcoin-qt
 %{_datadir}/kde4/services/feathercoin-qt.protocol
 %{_desktopdir}/feathercoin-qt.desktop
+%{_mandir}/man1/feathercoin-qt.1*
