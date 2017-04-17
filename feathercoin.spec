@@ -16,6 +16,7 @@ Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-
 # Source0-md5:	9ac8509ab7bc7fb39b8e9d474a1079e3
 Patch0:		%{name}-c++.patch
 Patch1:		%{name}-zxing.patch
+Patch2:		x32.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
 BuildRequires:	Qt5Core-devel >= 5
@@ -70,6 +71,9 @@ Oparty na Qt portfel Feathercoin.
 %setup -q -n Feathercoin-%{version}
 %patch0 -p1
 %patch1 -p1
+%ifarch x32
+%patch2 -p1
+%endif
 
 %build
 install -d src/build-aux
