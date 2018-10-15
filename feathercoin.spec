@@ -8,7 +8,7 @@ Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
 Version:	0.16.3
-Release:	1
+Release:	2
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
@@ -57,6 +57,33 @@ Feathercoin to waluta peer-to-peer. Peer-to-peer oznacza, że nie ma
 centralnego urzędu, który emituje nowe pieniądze czy śledzi
 transakcje. Zadania te są obsługiwane zespołowo przez sieć.
 
+%package devel
+Summary:	Header file for bitcoinconsensus library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki bitcoinconsensus
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	openssl-devel
+Conflicts:	bitcoin-devel
+
+%description devel
+Header file for bitcoinconsensus library.
+
+%description devel -l pl.UTF-8
+Plik nagłówkowy biblioteki bitcoinconsensus.
+
+%package static
+Summary:	Static bitcoinconsensus library
+Summary(pl.UTF-8):	Statyczna biblioteka bitcoinconsensus
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Conflicts:	bitcoin-static
+
+%description static
+Static bitcoinconsensus library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka bitcoinconsensus.
+
 %package qt
 Summary:	Qt-based Feathercoin Wallet
 Summary(pl.UTF-8):	Oparty na Qt portfel Feathercoin
@@ -82,8 +109,8 @@ Oparty na Qt portfel Feathercoin.
 %configure \
 	--enable-ccache%{!?with_ccache:=no} \
 	--disable-silent-rules \
-	--with-incompatible-bdb \
 	--with-gui=%{?with_gui:qt5}%{!?with_gui:no} \
+	--with-incompatible-bdb \
 	--with-system-univalue
 
 %{__make}
@@ -94,15 +121,18 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_mandir}/man{1,5},%{_desktopdir},%{_datadir}/kde4/services}
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libbitcoinconsensus.la
+
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_datadir}/kde4/services}
 sed -e 's#bitcoin#feathercoin#g;s#Bitcoin#Feathercoin#g' contrib/debian/bitcoin-qt.desktop > $RPM_BUILD_ROOT%{_desktopdir}/feathercoin-qt.desktop
 sed -e 's#bitcoin#feathercoin#g' contrib/debian/bitcoin-qt.protocol > $RPM_BUILD_ROOT%{_datadir}/kde4/services/feathercoin-qt.protocol
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -113,8 +143,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/feathercoin-cli.1*
 %{_mandir}/man1/feathercoin-tx.1*
 %{_mandir}/man1/feathercoind.1*
+%attr(755,root,root) %{_libdir}/libbitcoinconsensus.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbitcoinconsensus.so.0
-%attr(755,root,root) %{_libdir}/libbitcoinconsensus.so.*.*
+
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libbitcoinconsensus.so
+%{_includedir}/bitcoinconsensus.h
+%{_pkgconfigdir}/libbitcoinconsensus.pc
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libbitcoinconsensus.a
 
 %files qt
 %defattr(644,root,root,755)
