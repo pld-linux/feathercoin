@@ -7,13 +7,13 @@
 Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
-Version:	0.16.3
-Release:	4
+Version:	0.17.0.2
+Release:	1
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
 Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	eaecf6f317091f52fae0eff95ac3b7be
+# Source0-md5:	b5d463886272c5d5eef0abc71faed87d
 Patch0:		lib.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
@@ -27,25 +27,30 @@ BuildRequires:	Qt5Widgets-devel >= 5
 %endif
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake
-BuildRequires:	boost-devel
+BuildRequires:	boost-devel >= 1.47.0
 %{?with_ccache:BuildRequires:	ccache}
 BuildRequires:	db-cxx-devel >= 4.8
 BuildRequires:	gettext-tools
 %{?with_gui:BuildRequires:	libpng-devel}
 BuildRequires:	libsecp256k1-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
-BuildRequires:	libunivalue-devel
+BuildRequires:	libtool >= 2:2
+BuildRequires:	libunivalue-devel >= 1.0.4
 BuildRequires:	miniupnpc-devel >= 1.5
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	protobuf-devel
 BuildRequires:	qrencode-devel
 %{?with_gui:BuildRequires:	qt5-build >= 5}
+BuildRequires:	zeromq-devel >= 4
 %{?with_gui:BuildRequires:	zlib-devel}
 BuildRequires:	zxing-cpp-devel
+Requires:	libunivalue >= 1.0.4
 Requires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# uses nNeoScryptOptions symbol from binaries
+%define		skip_post_check_so	libbitcoinconsensus.so.*
 
 %description
 Feathercoin is a peer-to-peer currency. Peer-to-peer means that no
@@ -125,8 +130,35 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libbitcoinconsensus.la
 
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_datadir}/kde4/services}
-sed -e 's#bitcoin#feathercoin#g;s#Bitcoin#Feathercoin#g' contrib/debian/bitcoin-qt.desktop > $RPM_BUILD_ROOT%{_desktopdir}/feathercoin-qt.desktop
-sed -e 's#bitcoin#feathercoin#g' contrib/debian/bitcoin-qt.protocol > $RPM_BUILD_ROOT%{_datadir}/kde4/services/feathercoin-qt.protocol
+cat <<EOF >$RPM_BUILD_ROOT%{_desktopdir}/feathercoin-qt.desktop
+[Desktop Entry]
+Encoding=UTF-8
+Name=Feathercoin
+Comment=Feathercoin P2P Cryptocurrency
+Comment[fr]=Feathercoin, monnaie virtuelle cryptographique pair à pair
+Comment[pl]=Feathercoin - kryptowaluta P2P
+Comment[tr]=Feathercoin, eşten eşe kriptografik sanal para birimi
+Exec=feathercoin-qt %u
+Terminal=false
+Type=Application
+Icon=bitcoin128
+MimeType=x-scheme-handler/feathercoin;
+Categories=Office;Finance;
+EOF
+
+cat <<EOF >$RPM_BUILD_ROOT%{_datadir}/kde4/services/feathercoin-qt.protocol
+[Protocol]
+exec=feathercoin-qt '%u'
+protocol=feathercoin
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false
+EOF
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -136,7 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING README.md doc/*.txt contrib/debian/examples/bitcoin.conf
+%doc COPYING README.md doc/*.txt
 %attr(755,root,root) %{_bindir}/feathercoin-cli
 %attr(755,root,root) %{_bindir}/feathercoin-tx
 %attr(755,root,root) %{_bindir}/feathercoind
