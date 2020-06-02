@@ -7,14 +7,15 @@
 Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
-Version:	0.17.0.2
-Release:	5
+Version:	0.18.3
+Release:	1
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
 Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	b5d463886272c5d5eef0abc71faed87d
+# Source0-md5:	e5e3fc683a09ec7c2efc21dda691c402
 Patch0:		lib.patch
+Patch1:		qt-5.15.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
 BuildRequires:	Qt5Core-devel >= 5
@@ -103,6 +104,7 @@ Oparty na Qt portfel Feathercoin.
 %prep
 %setup -q -n Feathercoin-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -171,9 +173,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING README.md doc/*.txt
 %attr(755,root,root) %{_bindir}/feathercoin-cli
 %attr(755,root,root) %{_bindir}/feathercoin-tx
+%attr(755,root,root) %{_bindir}/feathercoin-wallet
 %attr(755,root,root) %{_bindir}/feathercoind
 %{_mandir}/man1/feathercoin-cli.1*
 %{_mandir}/man1/feathercoin-tx.1*
+%{_mandir}/man1/feathercoin-wallet.1*
 %{_mandir}/man1/feathercoind.1*
 %attr(755,root,root) %{_libdir}/libbitcoinconsensus.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbitcoinconsensus.so.0
