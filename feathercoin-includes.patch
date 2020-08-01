@@ -1,0 +1,10 @@
+--- ../BUILD/Feathercoin-0.18.3/src/httpserver.cpp.orig	2020-02-12 16:59:36.000000000 +0100
++++ ../BUILD/Feathercoin-0.18.3/src/httpserver.cpp	2020-08-01 08:15:43.332321225 +0200
+@@ -14,6 +14,7 @@
+ #include <sync.h>
+ #include <ui_interface.h>
+ 
++#include <deque>
+ #include <memory>
+ #include <stdio.h>
+ #include <stdlib.h>
