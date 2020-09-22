@@ -1,10 +1,10 @@
---- Feathercoin-0.18.3/src/httpserver.cpp.orig	2020-02-12 16:59:36.000000000 +0100
-+++ Feathercoin-0.18.3/src/httpserver.cpp	2020-08-01 08:15:43.332321225 +0200
-@@ -14,6 +14,7 @@
- #include <sync.h>
- #include <ui_interface.h>
+--- Feathercoin-0.19.1/src/util/translation.h.orig	2020-08-06 11:29:39.000000000 +0200
++++ Feathercoin-0.19.1/src/util/translation.h	2020-09-22 18:56:30.333268791 +0200
+@@ -7,6 +7,7 @@
  
-+#include <deque>
- #include <memory>
- #include <stdio.h>
- #include <stdlib.h>
+ #include <tinyformat.h>
+ 
++#include <functional>
+ #include <utility>
+ 
+ /**

@@ -7,16 +7,17 @@
 Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
-Version:	0.18.3
-Release:	3
+Version:	0.19.1
+Release:	1
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
 Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	e5e3fc683a09ec7c2efc21dda691c402
+# Source0-md5:	5af573e26b1fc7cb57ef5efc5dd88801
 Patch0:		lib.patch
 Patch1:		qt-5.15.patch
 Patch2:		%{name}-includes.patch
+Patch3:		%{name}-univalue.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
 BuildRequires:	Qt5Core-devel >= 5
@@ -33,20 +34,23 @@ BuildRequires:	boost-devel >= 1.47.0
 %{?with_ccache:BuildRequires:	ccache}
 BuildRequires:	db-cxx-devel >= 4.8
 BuildRequires:	gettext-tools
+BuildRequires:	libevent-devel
 %{?with_gui:BuildRequires:	libpng-devel}
-BuildRequires:	libsecp256k1-devel
-BuildRequires:	libstdc++-devel
+BuildRequires:	libsecp256k1-devel >= 0.1.0.15
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libunivalue-devel >= 1.0.4
 BuildRequires:	miniupnpc-devel >= 1.5
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	protobuf-devel
+BuildRequires:	python3 >= 1:3.5
 BuildRequires:	qrencode-devel
 %{?with_gui:BuildRequires:	qt5-build >= 5}
 BuildRequires:	zeromq-devel >= 4
 %{?with_gui:BuildRequires:	zlib-devel}
 BuildRequires:	zxing-cpp-devel
+Requires:	libsecp256k1 >= 0.1.0.15
 Requires:	libunivalue >= 1.0.4
 Requires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -107,6 +111,7 @@ Oparty na Qt portfel Feathercoin.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -116,8 +121,12 @@ Oparty na Qt portfel Feathercoin.
 %{__automake}
 # --with-gui defaults to qt4, but it doesn't build (QJsonObject is required)
 %configure \
+	--disable-bench \
+	--enable-bip70 \
 	--enable-ccache%{!?with_ccache:=no} \
+	--disable-gui-tests \
 	--disable-silent-rules \
+	--disable-tests \
 	--with-gui=%{?with_gui:qt5}%{!?with_gui:no} \
 	--with-incompatible-bdb \
 	--with-system-univalue

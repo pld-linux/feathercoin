@@ -1,18 +1,6 @@
---- Feathercoin-0.16.3/configure.ac~	2018-09-22 09:16:24.000000000 +0200
-+++ Feathercoin-0.16.3/configure.ac	2018-09-25 20:30:45.640038984 +0200
-@@ -1310,9 +1310,6 @@ if test x$need_bundled_univalue = xyes;
-   AC_CONFIG_SUBDIRS([src/univalue])
- fi
- 
--ac_configure_args="${ac_configure_args} --disable-shared --with-pic --with-bignum=no --enable-module-recovery --disable-jni"
--AC_CONFIG_SUBDIRS([src/secp256k1])
--
- AC_OUTPUT
- 
- dnl Taken from https://wiki.debian.org/RpathIssue
---- Feathercoin-0.16.3/configure.ac~	2018-09-25 20:31:22.000000000 +0200
-+++ Feathercoin-0.16.3/configure.ac	2018-09-25 20:34:53.278016850 +0200
-@@ -972,6 +972,7 @@ if test x$use_pkgconfig = xyes; then
+--- Feathercoin-0.19.1/configure.ac.orig	2020-08-06 11:29:39.000000000 +0200
++++ Feathercoin-0.19.1/configure.ac	2020-09-21 22:22:56.190904468 +0200
+@@ -1252,6 +1252,7 @@
        else
            AC_DEFINE_UNQUOTED([ENABLE_ZMQ],[0],[Define to 1 to enable ZMQ functions])
        fi
@@ -20,6 +8,16 @@
      ]
    )
  else
+@@ -1655,9 +1656,6 @@
+   AC_CONFIG_SUBDIRS([src/univalue])
+ fi
+ 
+-ac_configure_args="${ac_configure_args} --disable-shared --with-pic --enable-benchmark=no --with-bignum=no --enable-module-recovery --disable-jni"
+-AC_CONFIG_SUBDIRS([src/secp256k1])
+-
+ AC_OUTPUT
+ 
+ dnl Taken from https://wiki.debian.org/RpathIssue
 --- Feathercoin-0.16.3/src/Makefile.am~	2018-09-22 09:16:24.000000000 +0200
 +++ Feathercoin-0.16.3/src/Makefile.am	2018-09-25 20:40:02.844966767 +0200
 @@ -2,7 +2,7 @@

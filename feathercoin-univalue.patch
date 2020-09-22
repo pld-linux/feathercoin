@@ -1,0 +1,11 @@
+--- Feathercoin-0.19.1/src/rpc/blockchain.cpp.orig	2020-08-06 11:29:39.000000000 +0200
++++ Feathercoin-0.19.1/src/rpc/blockchain.cpp	2020-09-22 19:32:56.101427468 +0200
+@@ -2094,7 +2094,7 @@
+             // no scan in progress
+             return NullUniValue;
+         }
+-        result.pushKV("progress", g_scan_progress);
++        result.pushKV("progress", g_scan_progress.load());
+         return result;
+     } else if (request.params[0].get_str() == "abort") {
+         CoinsViewScanReserver reserver;
