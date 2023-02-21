@@ -1,0 +1,48 @@
+diff -ur Feathercoin-0.19.1.orig/src/bench/block_assemble.cpp Feathercoin-0.19.1/src/bench/block_assemble.cpp
+--- Feathercoin-0.19.1.orig/src/bench/block_assemble.cpp	2020-08-06 11:29:39.000000000 +0200
++++ Feathercoin-0.19.1/src/bench/block_assemble.cpp	2023-02-21 12:29:11.836557718 +0100
+@@ -10,6 +10,7 @@
+ #include <validation.h>
+ 
+ 
++#include <array>
+ #include <list>
+ #include <vector>
+ 
+diff -ur Feathercoin-0.19.1.orig/src/net_processing.cpp Feathercoin-0.19.1/src/net_processing.cpp
+--- Feathercoin-0.19.1.orig/src/net_processing.cpp	2020-08-06 11:29:39.000000000 +0200
++++ Feathercoin-0.19.1/src/net_processing.cpp	2023-02-21 12:27:04.349114113 +0100
+@@ -30,8 +30,20 @@
+ #include <util/strencodings.h>
+ #include <util/validation.h>
+ 
++#include <algorithm>
++#include <array>
++#include <atomic>
++#include <chrono>
++#include <deque>
++#include <iostream>
++#include <list>
++#include <map>
+ #include <memory>
++#include <set>
++#include <string>
+ #include <typeinfo>
++#include <utility>
++#include <vector>
+ 
+ #if defined(NDEBUG)
+ # error "Feathercoin cannot be compiled without assertions."
+diff -ur Feathercoin-0.19.1.orig/src/qt/sendcoinsdialog.cpp Feathercoin-0.19.1/src/qt/sendcoinsdialog.cpp
+--- Feathercoin-0.19.1.orig/src/qt/sendcoinsdialog.cpp	2020-08-06 11:29:39.000000000 +0200
++++ Feathercoin-0.19.1/src/qt/sendcoinsdialog.cpp	2023-02-21 12:28:52.529773392 +0100
+@@ -32,6 +32,9 @@
+ #include <QSettings>
+ #include <QTextDocument>
+ 
++#include <algorithm>
++#include <array>
++
+ static const std::array<int, 9> confTargets = { {2, 4, 6, 12, 24, 48, 144, 504, 1008} };
+ int getConfTargetForIndex(int index) {
+     if (index+1 > static_cast<int>(confTargets.size())) {

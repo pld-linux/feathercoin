@@ -18,6 +18,7 @@ Patch0:		lib.patch
 Patch1:		qt-5.15.patch
 Patch2:		%{name}-includes.patch
 Patch3:		%{name}-univalue.patch
+Patch4:		missing-includes.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
 BuildRequires:	Qt5Core-devel >= 5
@@ -112,6 +113,7 @@ Oparty na Qt portfel Feathercoin.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
