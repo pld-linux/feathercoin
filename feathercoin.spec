@@ -8,7 +8,7 @@ Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
 Version:	0.19.1
-Release:	8
+Release:	9
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
