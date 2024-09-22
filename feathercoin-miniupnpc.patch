@@ -1,0 +1,14 @@
+--- Feathercoin-0.19.1.1/src/net.cpp.orig	2022-10-29 18:23:33.000000000 +0200
++++ Feathercoin-0.19.1.1/src/net.cpp	2024-09-22 13:03:50.669769555 +0200
+@@ -1448,7 +1448,11 @@ static void ThreadMapPort()
+     struct IGDdatas data;
+     int r;
+ 
++#if MINIUPNPC_API_VERSION < 18
+     r = UPNP_GetValidIGD(devlist, &urls, &data, lanaddr, sizeof(lanaddr));
++#else
++    r = UPNP_GetValidIGD(devlist, &urls, &data, lanaddr, sizeof(lanaddr), NULL, 0);
++#endif
+     if (r == 1)
+     {
+         if (fDiscover) {
