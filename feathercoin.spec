@@ -8,7 +8,7 @@ Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
 Version:	0.19.1.1
-Release:	2
+Release:	3
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
@@ -19,6 +19,7 @@ Patch1:		%{name}-miniupnpc.patch
 Patch2:		%{name}-includes.patch
 Patch3:		%{name}-univalue.patch
 Patch4:		missing-includes.patch
+Patch5:		boost-1.87.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
 BuildRequires:	Qt5Core-devel >= 5
@@ -109,11 +110,12 @@ Oparty na Qt portfel Feathercoin.
 
 %prep
 %setup -q -n Feathercoin-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
+%patch -P 4 -p1
+%patch -P 5 -p1
 
 %build
 %{__libtoolize}

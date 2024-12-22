@@ -1,0 +1,22 @@
+--- Feathercoin-0.19.1.1/src/wallet/db.cpp~	2022-10-29 18:23:33.000000000 +0200
++++ Feathercoin-0.19.1.1/src/wallet/db.cpp	2024-12-23 00:06:23.313333211 +0100
+@@ -880,7 +880,7 @@
+                         return false;
+                     }
+ 
+-                    fs::copy_file(pathSrc, pathDest, fs::copy_option::overwrite_if_exists);
++                    fs::copy_file(pathSrc, pathDest, fs::copy_options::overwrite_existing);
+                     LogPrintf("copied %s to %s\n", strFile, pathDest.string());
+                     return true;
+                 } catch (const fs::filesystem_error& e) {
+--- Feathercoin-0.19.1.1/src/wallet/walletutil.cpp~	2022-10-29 18:23:33.000000000 +0200
++++ Feathercoin-0.19.1.1/src/wallet/walletutil.cpp	2024-12-23 00:15:40.453333198 +0100
+@@ -74,7 +74,7 @@
+         if (it->status().type() == fs::directory_file && IsBerkeleyBtree(it->path() / "wallet.dat")) {
+             // Found a directory which contains wallet.dat btree file, add it as a wallet.
+             paths.emplace_back(path);
+-        } else if (it.level() == 0 && it->symlink_status().type() == fs::regular_file && IsBerkeleyBtree(it->path())) {
++        } else if (it.depth() == 0 && it->symlink_status().type() == fs::regular_file && IsBerkeleyBtree(it->path())) {
+             if (it->path().filename() == "wallet.dat") {
+                 // Found top-level wallet.dat btree file, add top level directory ""
+                 // as a wallet.
