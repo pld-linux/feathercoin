@@ -7,13 +7,13 @@
 Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
-Version:	0.19.1.1
-Release:	4
+Version:	0.19.2
+Release:	1
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
 Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	23f9b229dbf6bf9c8763f3f426c25fcd
+# Source0-md5:	84bbeb92cdd39591d6a2029e9b7a1b20
 Patch0:		lib.patch
 Patch1:		%{name}-miniupnpc.patch
 Patch2:		%{name}-includes.patch
@@ -31,6 +31,7 @@ BuildRequires:	Qt5Test-devel >= 5
 BuildRequires:	Qt5Widgets-devel >= 5
 %endif
 BuildRequires:	autoconf >= 2.69
+BuildRequires:	autoconf-archive >= 2019.01.06
 BuildRequires:	automake
 BuildRequires:	boost-devel >= 1.47.0
 %{?with_ccache:BuildRequires:	ccache}
@@ -39,7 +40,7 @@ BuildRequires:	gettext-tools
 BuildRequires:	libevent-devel
 %{?with_gui:BuildRequires:	libpng-devel}
 BuildRequires:	libsecp256k1-devel >= 0.1.0.15
-BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libunivalue-devel >= 1.0.4
 BuildRequires:	miniupnpc-devel >= 1.5
@@ -49,6 +50,7 @@ BuildRequires:	protobuf-devel
 BuildRequires:	python3 >= 1:3.5
 BuildRequires:	qrencode-devel
 %{?with_gui:BuildRequires:	qt5-build >= 5}
+BuildRequires:	sed >= 4.0
 BuildRequires:	zeromq-devel >= 4
 %{?with_gui:BuildRequires:	zlib-devel}
 BuildRequires:	zxing-cpp-devel
@@ -57,6 +59,8 @@ Requires:	libunivalue >= 1.0.4
 Requires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+# error "Feathercoin cannot be compiled without assertions."
+%define		filterout_cpp		-DNDEBUG
 # uses nNeoScryptOptions symbol from binaries
 %define		skip_post_check_so	libbitcoinconsensus.so.*
 
@@ -116,6 +120,12 @@ Oparty na Qt portfel Feathercoin.
 %patch -P 3 -p1
 %patch -P 4 -p1
 %patch -P 5 -p1
+
+# current protobuf requires C++17
+# AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory], [nodefault])
+%{__sed} -i -e '/AX_CXX_COMPILE_STDCXX/ s/11/17/' configure.ac
+# too old version of macro for C++17, rely on autoconf-archive
+%{__rm} build-aux/m4/ax_cxx_compile_stdcxx.m4
 
 %build
 %{__libtoolize}
@@ -185,7 +195,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING README.md doc/*.txt
+%doc COPYING README.md SECURITY.md doc/*.txt
 %attr(755,root,root) %{_bindir}/feathercoin-cli
 %attr(755,root,root) %{_bindir}/feathercoin-tx
 %attr(755,root,root) %{_bindir}/feathercoin-wallet
