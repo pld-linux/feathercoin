@@ -23,22 +23,21 @@ Patch6:		boost-1.90.patch
 Patch7:		libsecp256k1-0.6.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
-BuildRequires:	Qt5Core-devel >= 5
-BuildRequires:	Qt5DBus-devel >= 5
-BuildRequires:	Qt5Gui-devel >= 5
-BuildRequires:	Qt5Network-devel >= 5
-BuildRequires:	Qt5PrintSupport-devel >= 5
-BuildRequires:	Qt5Test-devel >= 5
-BuildRequires:	Qt5Widgets-devel >= 5
+BuildRequires:	Qt5Core-devel >= 5.5.1
+BuildRequires:	Qt5DBus-devel >= 5.5.1
+BuildRequires:	Qt5Gui-devel >= 5.5.1
+BuildRequires:	Qt5Network-devel >= 5.5.1
+BuildRequires:	Qt5Test-devel >= 5.5.1
+BuildRequires:	Qt5Widgets-devel >= 5.5.1
 %endif
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	autoconf-archive >= 2019.01.06
-BuildRequires:	automake
-BuildRequires:	boost-devel >= 1.47.0
+BuildRequires:	automake >= 1:1.13
+BuildRequires:	boost-devel >= 1.69.0
 %{?with_ccache:BuildRequires:	ccache}
 BuildRequires:	db-cxx-devel >= 4.8
 BuildRequires:	gettext-tools
-BuildRequires:	libevent-devel
+BuildRequires:	libevent-devel >= 2.0.21
 %{?with_gui:BuildRequires:	libpng-devel}
 BuildRequires:	libsecp256k1-devel >= 0.6.0
 BuildRequires:	libstdc++-devel >= 6:7
@@ -50,13 +49,13 @@ BuildRequires:	pkgconfig
 BuildRequires:	protobuf-devel
 BuildRequires:	python3 >= 1:3.5
 BuildRequires:	qrencode-devel
-%{?with_gui:BuildRequires:	qt5-build >= 5}
+%{?with_gui:BuildRequires:	qt5-build >= 5.5.1}
 BuildRequires:	sed >= 4.0
 BuildRequires:	zeromq-devel >= 4
 %{?with_gui:BuildRequires:	zlib-devel}
 BuildRequires:	zxing-cpp-devel
-Requires:	libsecp256k1 >= 0.1.0.15
-Requires:	libunivalue >= 1.0.4
+Requires:	libsecp256k1%{?_isa} >= 0.1.0.15
+Requires:	libunivalue%{?_isa} >= 1.0.4
 Requires:	perl-base
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -79,8 +78,8 @@ transakcje. Zadania te są obsługiwane zespołowo przez sieć.
 Summary:	Header file for bitcoinconsensus library
 Summary(pl.UTF-8):	Plik nagłówkowy biblioteki bitcoinconsensus
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	openssl-devel
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	openssl-devel%{?_isa}
 Conflicts:	bitcoin-devel
 
 %description devel
@@ -93,7 +92,7 @@ Plik nagłówkowy biblioteki bitcoinconsensus.
 Summary:	Static bitcoinconsensus library
 Summary(pl.UTF-8):	Statyczna biblioteka bitcoinconsensus
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 Conflicts:	bitcoin-static
 
 %description static
