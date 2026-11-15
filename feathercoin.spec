@@ -7,19 +7,20 @@
 Summary:	Feathercoin - a peer-to-peer currency
 Summary(pl.UTF-8):	Feathercoin - waluta peer-to-peer
 Name:		feathercoin
-Version:	0.19.2
+Version:	0.21.0
 Release:	1
 License:	MIT
 Group:		Applications/Networking
 #Source0Download: https://github.com/FeatherCoin/Feathercoin/releases
 Source0:	https://github.com/FeatherCoin/Feathercoin/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	84bbeb92cdd39591d6a2029e9b7a1b20
+# Source0-md5:	a35625548ced2676d8953aace6d86f54
 Patch0:		lib.patch
 Patch1:		%{name}-miniupnpc.patch
-Patch2:		%{name}-includes.patch
 Patch3:		%{name}-univalue.patch
 Patch4:		missing-includes.patch
 Patch5:		boost-1.87.patch
+Patch6:		boost-1.90.patch
+Patch7:		libsecp256k1-0.6.patch
 URL:		https://www.feathercoin.com/
 %if %{with gui}
 BuildRequires:	Qt5Core-devel >= 5
@@ -39,7 +40,7 @@ BuildRequires:	db-cxx-devel >= 4.8
 BuildRequires:	gettext-tools
 BuildRequires:	libevent-devel
 %{?with_gui:BuildRequires:	libpng-devel}
-BuildRequires:	libsecp256k1-devel >= 0.1.0.15
+BuildRequires:	libsecp256k1-devel >= 0.6.0
 BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libunivalue-devel >= 1.0.4
@@ -114,18 +115,21 @@ Oparty na Qt portfel Feathercoin.
 
 %prep
 %setup -q -n Feathercoin-%{version}
-%patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-%patch -P 3 -p1
-%patch -P 4 -p1
-%patch -P 5 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
 
 # current protobuf requires C++17
 # AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory], [nodefault])
 %{__sed} -i -e '/AX_CXX_COMPILE_STDCXX/ s/11/17/' configure.ac
 # too old version of macro for C++17, rely on autoconf-archive
 %{__rm} build-aux/m4/ax_cxx_compile_stdcxx.m4
+
+%{__rm} -r src/secp256k1
 
 %build
 %{__libtoolize}
@@ -204,12 +208,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/feathercoin-tx.1*
 %{_mandir}/man1/feathercoin-wallet.1*
 %{_mandir}/man1/feathercoind.1*
-%attr(755,root,root) %{_libdir}/libbitcoinconsensus.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbitcoinconsensus.so.0
+%{_libdir}/libbitcoinconsensus.so.*.*.*
+%ghost %{_libdir}/libbitcoinconsensus.so.0
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbitcoinconsensus.so
+%{_libdir}/libbitcoinconsensus.so
 %{_includedir}/bitcoinconsensus.h
 %{_pkgconfigdir}/libbitcoinconsensus.pc
 

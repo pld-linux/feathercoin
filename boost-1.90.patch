@@ -1,0 +1,21 @@
+--- Feathercoin-0.21.0/configure.ac~	2026-11-15 10:26:30.000000000 +0100
++++ Feathercoin-0.21.0/configure.ac	2026-11-15 10:27:54.334213393 +0100
+@@ -1298,7 +1298,6 @@
+ if test x$want_boost = xno; then
+     AC_MSG_ERROR([[only libbitcoinconsensus can be built without boost]])
+ fi
+-AX_BOOST_SYSTEM
+ AX_BOOST_FILESYSTEM
+ AX_BOOST_THREAD
+ 
+--- Feathercoin-0.21.0/src/wallet/walletutil.cpp~	2026-11-15 10:36:32.000000000 +0100
++++ Feathercoin-0.21.0/src/wallet/walletutil.cpp	2026-11-15 10:41:05.466821701 +0100
+@@ -73,7 +73,7 @@
+             }
+         } catch (const std::exception& e) {
+             LogPrintf("%s: Error scanning %s: %s\n", __func__, it->path().string(), e.what());
+-            it.no_push();
++            it.disable_recursion_pending();
+         }
+     }
+ 

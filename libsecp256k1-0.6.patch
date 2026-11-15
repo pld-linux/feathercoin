@@ -1,0 +1,11 @@
+--- Feathercoin-0.21.0/src/pubkey.cpp~	2026-05-30 14:40:59.000000000 +0200
++++ Feathercoin-0.21.0/src/pubkey.cpp	2026-11-15 11:36:55.227396713 +0100
+@@ -178,7 +178,7 @@
+     assert(sigbytes.size() == 64);
+     secp256k1_xonly_pubkey pubkey;
+     if (!secp256k1_xonly_pubkey_parse(secp256k1_context_verify, &pubkey, m_keydata.data())) return false;
+-    return secp256k1_schnorrsig_verify(secp256k1_context_verify, sigbytes.data(), msg.begin(), &pubkey);
++    return secp256k1_schnorrsig_verify(secp256k1_context_verify, sigbytes.data(), msg.begin(), msg.size(), &pubkey);
+ }
+ 
+ bool XOnlyPubKey::CheckPayToContract(const XOnlyPubKey& base, const uint256& hash, bool parity) const
